@@ -5,18 +5,6 @@ const app = express(); //? con esta linea inicializamos express
 
 app.use(express.json()); //? Enseñarle a express a que entienda informacion que venga en formato json
 
-interface Toy {
-  id: number;
-  name: string;
-  type: string;
-  magicLevel: number;
-  packed: boolean;
-  assignedTo: string | null;
-}
-
-const toys: Toy[] = [];
-let toyId = 1;
-
 //crear el juguete
 app.post("/toy", createToy);
 
