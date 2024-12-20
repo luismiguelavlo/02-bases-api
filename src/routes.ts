@@ -1,74 +1,16 @@
-import { Request, Response } from "express";
+import { Request, Response, Router } from "express";
+import { assignToy, createToy, packedToy, seeWorkshop } from "./controller";
 
-interface Toy {
-  id: number;
-  name: string;
-  type: string;
-  magicLevel: number;
-  packed: boolean;
-  assignedTo: string | null;
-}
+export const router = Router();
 
-const toys: Toy[] = [];
-let toyId = 1;
+//crear el juguete
+router.post("/toy", createToy);
 
-export const createToy = (req: Request, res: Response) => {
-  //! 1. obtuve la data del cliente
-  const { name, type, magicLevel } = req.body;
+//empacar el juguete //* :id es el id del juguete que quiero empacar
+router.get("/toy/:id/pack", packedToy);
 
-  //! 2. valide que la data venga
-  if (!name || name.length <= 0) {
-    return res.status(400).json({
-      message: "name is required",
-    });
-  }
+//asignar juguete a un niño
+router.post("/toy/:id/assign", assignToy);
 
-  if (!type || type.length <= 0) {
-    return res.status(400).json({
-      message: "type is required",
-    });
-  }
-
-  if (!magicLevel) {
-    return res.status(400).json({
-      message: "magicLevel is required",
-    });
-  }
-
-  //! 3. cree el objeto con el juguete a almacenar
-  const newToy: Toy = {
-    id: toyId++,
-    name,
-    type,
-    magicLevel,
-    packed: false,
-    assignedTo: null,
-  };
-
-  //! 4. Almacenar el juguete creado en un arreglo
-  toys.push(newToy);
-
-  //! 5. Enviamos la respuesta que se ha creado exitosamente con el info del juguete creado
-  return res.status(201).json({
-    message: "Juguete creado exitosamente",
-    toy: newToy,
-  });
-};
-
-export const packedToy = (req: Request, res: Response) => {
-  res.json({
-    ok: true,
-  });
-};
-
-export const assignToy = (req: Request, res: Response) => {
-  res.json({
-    ok: true,
-  });
-};
-
-export const seeWorkshop = (req: Request, res: Response) => {
-  return res.status(200).json({
-    toys: toys,
-  });
-};
+//ver el estado del taller
+router.get("/workshop", seeWorkshop);
